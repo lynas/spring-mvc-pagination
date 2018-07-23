@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,8 +90,11 @@ class StudentController {
     private final StudentRepository repository;
 
     @GetMapping("/students")
-    public Page<Student> findAll(@RequestParam Optional<String> name, @RequestParam Optional<Integer> page) {
-        // optional page and name
-        return repository.findByName(name.orElse("_"), new PageRequest(page.orElse(0), 5));
+    public Page<Student> findAll(
+            @RequestParam Optional<String> name,
+            @RequestParam Optional<Integer> page,
+            @RequestParam Optional<String> sortBy) {
+        // Sort by added
+        return repository.findByName(name.orElse("_"), new PageRequest(page.orElse(0), 5, Sort.Direction.ASC, sortBy.orElse("id")));
     }
 }
