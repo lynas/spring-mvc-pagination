@@ -25,11 +25,6 @@ import java.util.Optional;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
 
-interface StudentRepository extends JpaRepository<Student, Long> {
-
-    @Query("select s from Student s where name like %?1%")
-    Page<Student> findByProperty(@Param("name") String name, Pageable pageable);
-}
 
 @SpringBootApplication
 public class PaginationAndSortingApplication {
@@ -84,6 +79,12 @@ class Student {
     private String name;
     private String course;
     private int admissionYear;
+}
+
+interface StudentRepository extends JpaRepository<Student, Long> {
+
+    @Query("select s from Student s where name like %?1%")
+    Page<Student> findByProperty(@Param("name") String name, Pageable pageable);
 }
 
 @RestController
