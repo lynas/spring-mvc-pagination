@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Optional;
 
 
 @SpringBootApplication
@@ -88,9 +89,8 @@ class StudentController {
     private final StudentRepository repository;
 
     @GetMapping("/students")
-    public Page<Student> findAll(@RequestParam String name) {
-        // name mandatory
-        // requires full name
-        return repository.findByName(name, new PageRequest(0, 5));
+    public Page<Student> findAll(@RequestParam Optional<String> name, @RequestParam Optional<Integer> page) {
+        // optional page and name
+        return repository.findByName(name.orElse("_"), new PageRequest(page.orElse(0), 5));
     }
 }
