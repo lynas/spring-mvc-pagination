@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
@@ -74,6 +75,7 @@ class Student {
 }
 
 interface StudentRepository extends JpaRepository<Student, Long> {
+    List<Student> findByName(String name);
 }
 
 @RestController
@@ -82,7 +84,9 @@ class StudentController {
     private final StudentRepository repository;
 
     @GetMapping("/students")
-    public List<Student> findAll() {
-        return repository.findAll();
+    public List<Student> findAll(@RequestParam String name) {
+        // name mandatory
+        // requires full name
+        return repository.findByName(name);
     }
 }
