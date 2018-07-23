@@ -23,9 +23,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Optional;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
+
 interface StudentRepository extends JpaRepository<Student, Long> {
-    @Query("select s from Student s")
-    Page<Student> findPageable(Pageable pageable);
 
     @Query("select s from Student s where name like %?1%")
     Page<Student> findByProperty(@Param("name") String name, Pageable pageable);
@@ -41,34 +41,34 @@ public class PaginationAndSortingApplication {
     @Bean
     public CommandLineRunner init(StudentRepository repository) {
         return args -> {
-            repository.save(new Student(null, "sazzad", "class1", 1995));
-            repository.save(new Student(null, "Rony", "class2", 1993));
-            repository.save(new Student(null, "Naim", "class4", 1996));
-            repository.save(new Student(null, "Dania", "class5", 1995));
-            repository.save(new Student(null, "Mamun", "class6", 1993));
-            repository.save(new Student(null, "Rimi", "class3", 1995));
-            repository.save(new Student(null, "Habib", "class9", 1991));
-            repository.save(new Student(null, "Shail", "class6", 1999));
-            repository.save(new Student(null, "Pranjol", "class3", 1998));
-            repository.save(new Student(null, "Shohag", "class9", 1992));
-            repository.save(new Student(null, "Ramjan", "class7", 1993));
-            repository.save(new Student(null, "Ashik", "class4", 1996));
-            repository.save(new Student(null, "Kibria", "class6", 1995));
-            repository.save(new Student(null, "Aurik", "class3", 1997));
-            repository.save(new Student(null, "Tanvir", "class2", 1998));
-            repository.save(new Student(null, "Nazmul", "class6", 1995));
-            repository.save(new Student(null, "Mizan", "class7", 1996));
-            repository.save(new Student(null, "Anik", "class3", 1998));
-            repository.save(new Student(null, "Mehedi", "class9", 1997));
-            repository.save(new Student(null, "Shahadat", "class8", 1999));
-            repository.save(new Student(null, "Dipak", "class9", 1995));
-            repository.save(new Student(null, "Mukta", "class4", 1997));
-            repository.save(new Student(null, "Rabaet", "class2", 1997));
-            repository.save(new Student(null, "Lopa", "class5", 1995));
-            repository.save(new Student(null, "Markes", "class2", 1997));
-            repository.save(new Student(null, "Valentino", "class1", 1996));
-            repository.save(new Student(null, "Fotik", "class2", 1991));
-            repository.save(new Student(null, "Lubna", "class4", 1992));
+            repository.save(new Student(null, "sazzad", "one", 1995));
+            repository.save(new Student(null, "Rony", "one", 1993));
+            repository.save(new Student(null, "Naim", "one", 1996));
+            repository.save(new Student(null, "Dania", "one", 1995));
+            repository.save(new Student(null, "Mamun", "one", 1993));
+            repository.save(new Student(null, "Rimi", "one", 1995));
+            repository.save(new Student(null, "Habib", "two", 1991));
+            repository.save(new Student(null, "Shail", "two", 1999));
+            repository.save(new Student(null, "Pranjol", "two", 1998));
+            repository.save(new Student(null, "Shohag", "two", 1992));
+            repository.save(new Student(null, "Ramjan", "two", 1993));
+            repository.save(new Student(null, "Ashik", "two", 1996));
+            repository.save(new Student(null, "Kibria", "two", 1995));
+            repository.save(new Student(null, "Aurik", "three", 1997));
+            repository.save(new Student(null, "Tanvir", "three", 1998));
+            repository.save(new Student(null, "Nazmul", "three", 1995));
+            repository.save(new Student(null, "Mizan", "three", 1996));
+            repository.save(new Student(null, "Anik", "three", 1998));
+            repository.save(new Student(null, "Mehedi", "three", 1997));
+            repository.save(new Student(null, "Shahadat", "four", 1999));
+            repository.save(new Student(null, "Dipak", "four", 1995));
+            repository.save(new Student(null, "Mukta", "four", 1997));
+            repository.save(new Student(null, "Rabaet", "four", 1997));
+            repository.save(new Student(null, "Lopa", "four", 1995));
+            repository.save(new Student(null, "Markes", "five", 1997));
+            repository.save(new Student(null, "Valentino", "five", 1996));
+            repository.save(new Student(null, "Fotik", "five", 1991));
+            repository.save(new Student(null, "Lubna", "five", 1992));
         };
     }
 }
@@ -92,9 +92,12 @@ class StudentController {
     private final StudentRepository repository;
 
     @GetMapping("/students")
-    public Page<Student> findAll(@RequestParam(value = "name") Optional<String> name,
-                                 @RequestParam("page") Optional<Integer> page) {
+    public Page<Student> findAll(
+            @RequestParam Optional<String> name,
+            @RequestParam Optional<String> course,
+            @RequestParam Optional<Integer> page) {
         System.out.println(name);
-        return repository.findByProperty(name.orElse("_"), new PageRequest(page.orElse(0), 5));
+        System.out.println(course);
+        return repository.findByProperty(name.orElse("_"), new PageRequest(page.orElse(0), 5, ASC, "name"));
     }
 }
