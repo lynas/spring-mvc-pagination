@@ -8,6 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.List;
 
 
 @SpringBootApplication
@@ -77,7 +79,7 @@ class Student {
 
 interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("select s from Student s where name like %?1%")
-    List<Student> findByName(String name);
+    Page<Student> findByName(String name, Pageable pageable);
 }
 
 @RestController
@@ -86,9 +88,9 @@ class StudentController {
     private final StudentRepository repository;
 
     @GetMapping("/students")
-    public List<Student> findAll(@RequestParam String name) {
+    public Page<Student> findAll(@RequestParam String name) {
         // name mandatory
         // requires full name
-        return repository.findByName(name);
+        return repository.findByName(name, new PageRequest(0, 5));
     }
 }
