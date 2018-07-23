@@ -8,22 +8,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Optional;
-
-import static org.springframework.data.domain.Sort.Direction.ASC;
+import java.util.List;
 
 
 @SpringBootApplication
@@ -82,9 +74,6 @@ class Student {
 }
 
 interface StudentRepository extends JpaRepository<Student, Long> {
-
-    @Query("select s from Student s where name like %?1%")
-    Page<Student> findByProperty(@Param("name") String name, Pageable pageable);
 }
 
 @RestController
@@ -93,12 +82,7 @@ class StudentController {
     private final StudentRepository repository;
 
     @GetMapping("/students")
-    public Page<Student> findAll(
-            @RequestParam Optional<String> name,
-            @RequestParam Optional<String> course,
-            @RequestParam Optional<Integer> page) {
-        System.out.println(name);
-        System.out.println(course);
-        return repository.findByProperty(name.orElse("_"), new PageRequest(page.orElse(0), 5, ASC, "name"));
+    public List<Student> findAll() {
+        return repository.findAll();
     }
 }
