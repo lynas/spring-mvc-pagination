@@ -95,6 +95,9 @@ class StudentController {
             @RequestParam Optional<Integer> page,
             @RequestParam Optional<String> sortBy) {
         // Sort by added
-        return repository.findByName(name.orElse("_"), new PageRequest(page.orElse(0), 5, Sort.Direction.ASC, sortBy.orElse("id")));
+        return repository.findByName(name.orElse("_"),
+                new PageRequest(
+                        page.orElse(0), 5,
+                        Sort.Direction.ASC, sortBy.orElse("id")));
     }
 }
